@@ -1,0 +1,223 @@
+.predictive-wrapper {
+    position: relative;
+    min-height: 100vh;
+    padding: 20px;
+    background: linear-gradient(to right, #f1f1f1, #ddd);
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.predictive-wrapper.dark {
+    background: linear-gradient(to right, #1b263b, #0d1b2a);
+}
+
+.predictive-background-shape {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(to bottom right, #0d1b2a, #1b263b);
+    clip-path: polygon(0 0, 25% 0, 75% 100%, 0% 100%);
+    z-index: 0;
+}
+
+.predictive-back {
+    position: absolute;
+    top: 40px;
+    left: 20px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: white; /* Set the back button color to white */
+    z-index: 2;
+    cursor: pointer;
+}
+
+.predictive-wrapper.dark .predictive-back {
+    color: white; /* Ensure the back button remains white in dark mode */
+}
+
+/* Predictive Content Box */
+.predictive-content {
+    position: relative;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.8); /* Slightly transparent white background */
+    padding: 60px 80px; /* Increase padding for more spacing */
+    border-radius: 30px; /* Rounded corners */
+    max-width: 90%; /* Ensure it doesn't overflow the screen width */
+    max-height: 90vh; /* Ensure it doesn't overflow the screen height */
+    margin: 20px auto; /* Center the box */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2); /* Stronger shadow for emphasis */
+    overflow: hidden; /* Prevent content overflow */
+}
+
+/* Dark mode for the content box */
+.predictive-wrapper.dark .predictive-content {
+    background: rgba(18, 18, 18, 0.8); /* Slightly transparent dark background */
+    color: white;
+}
+
+/* Title styling */
+.predictive-title {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    color: black; /* Set the font color to black */
+    margin-bottom: 30px;
+}
+
+.predictive-panels {
+    display: flex;
+    gap: 30px;
+}
+
+.left-panel {
+    flex: 2;
+}
+
+.right-panel {
+    flex: 1;
+}
+
+.location-box {
+    background: #fff;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.predictive-wrapper.dark .location-box {
+    background: #222;
+    color: white;
+}
+
+/* Make the "Location" text black */
+.location-header {
+    color: black;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.date-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+/* Make the "Today" text black */
+.date-label {
+    color: black;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* Style the date input to make it more visible */
+.date-input {
+    color: black;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.date-input:focus {
+    outline: none;
+    border-color: #4b4b8d; /* Add a focus color */
+    box-shadow: 0 0 5px rgba(75, 75, 141, 0.5);
+}
+
+.time-label {
+    height: 30px;
+    line-height: 30px;
+    font-size: 0.85rem;
+    color: #333;
+}
+
+.predictive-wrapper.dark .time-label {
+    color: #ddd;
+}
+
+.scrollable-time-chart {
+    display: flex;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.time-labels {
+    display: flex;
+    flex-direction: column;
+    margin-right: 10px;
+}
+
+.chart-wrapper {
+    flex: 1;
+    min-width: 200px;
+}
+
+.live-view-box {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    color: black;
+    margin-top: 40px;
+}
+
+.predictive-wrapper.dark .live-view-box {
+    background: #2a2a2a;
+}
+
+.live-view-placeholder {
+    width: 100%;
+    height: 150px;
+    background: #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 3rem;
+}
+
+.live-description {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.live-subtext {
+    font-size: 1rem;
+    color: #666;
+}
+
+.predictive-wrapper.dark .live-subtext {
+    color: #aaa;
+}
+
+/* Date Picker */
+.date-picker {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    gap: 10px;
+}
+
+.date-picker label {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.date-picker input {
+    padding: 5px 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+

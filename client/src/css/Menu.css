@@ -1,0 +1,84 @@
+.menu-wrapper {
+    position: relative;
+    height: 100vh;
+    background: #1b263b; /* Solid dark background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+    padding: 20px;
+}
+
+.menu-wrapper.dark {
+    background: #0d1b2a; /* Even darker background for dark mode */
+}
+
+.menu-background-shape {
+    display: none; /* Remove the background shape */
+}
+
+.menu-back {
+    position: absolute;
+    top: 40px;
+    left: 50px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: white;
+    z-index: 2;
+    cursor: pointer;
+}
+
+.menu-content {
+    position: relative;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.5);
+    padding: 80px 100px;
+    border-radius: 25px;
+    text-align: center;
+    backdrop-filter: blur(12px);
+    max-width: 700px;
+    width: 100%;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.menu-wrapper.dark .menu-content {
+    background: rgba(18, 18, 18, 0.6);
+    color: white;
+}
+
+.menu-avatar {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 25px; /* Center the avatar horizontally and add spacing below */
+    display: block; /* Ensure the image behaves as a block element */
+}
+
+.menu-username {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 35px;
+}
+
+.menu-links {
+    list-style: none;
+    padding: 0;
+}
+
+.menu-links li {
+    font-size: 22px;
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.menu-links li:hover {
+    color: #4b4b8d;
+    transform: scale(1.05);
+}

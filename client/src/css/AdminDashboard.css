@@ -1,0 +1,255 @@
+.dashboard {
+    display: flex;
+    height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #e6e6e6;
+  }
+  
+
+  .sidebar {
+    width: 240px;
+    background-color: #1e2942;
+    color: white;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-top-right-radius: 25px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 100;
+  }
+  
+  .main-content {
+    margin-left: 240px;
+    padding: 2rem;
+    flex-grow: 1;
+    overflow-x: hidden;
+  }
+  
+  .logo {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .role-label {
+    font-style: italic;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+  }
+  
+  .nav-list {
+    list-style: none;
+    padding: 0;
+    font-weight: bold;
+  }
+  
+  .nav-list li {
+    margin-bottom: 1rem;
+  }
+  
+  .settings-icon {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-top: auto;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: flex-end; /* Align content to the right */
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .search {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #f2ebf5;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    width: 250px;
+    border: 1px solid #000000;
+  }
+  
+  .search input {
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 100%;
+  }
+  
+  .admin-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-weight: 500;
+  }
+  
+  .admin-name {
+    color: #0d1e38;
+    font-weight: bold;
+  }
+  
+  .logout-icon {
+    color: #0d1e38;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: color 0.2s ease-in-out;
+  }
+  
+  .logout-icon:hover {
+    color: #0a172d;
+  }
+  
+  .avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+  }
+  
+  .page-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin: 2rem 0 1rem;
+    color: #2c3443;
+  }
+  
+  .stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .card.gradient {
+    background: linear-gradient(135deg, #4a6b8f, #0d1e38);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 20px;
+    text-align: center;
+    flex: 1 1 300px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    min-width: 250px;
+  }
+  
+  .card h3 {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+
+    
+  }
+  
+  .card p {
+    font-size: 0.85rem;
+  }
+  
+  .traffic {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: space-between;
+  }
+  
+  .traffic-card {
+    flex: 1 1 300px;
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    min-width: 250px;
+  }
+  
+  .traffic-card .label {
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+    color: #333;
+  }
+  
+  .traffic-card .day {
+    color: #667;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  
+  .progress-circle {
+    margin: 1rem auto 0;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: conic-gradient(#1b365f 0% 80%, #ccc 0% 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1rem;
+    color: white;
+  }
+  
+  .nav-link {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    display: block;
+    border-radius: 10px;
+    transition: background 0.3s ease;
+  }
+  
+  .icon-black {
+    color: #000; 
+  }
+
+
+  .nav-link:hover {
+    background-color: #0d1e38;
+  }
+  
+  .active-link {
+    position: relative;
+    background-color: #1668e2;
+    border: 1px solid white;
+  }
+  
+  .active-link::before {
+    content: '⮞';
+    position: absolute;
+    left: -15px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    
+  }
+
+  .profile-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    width: 150px;
+  }
+
+  .dropdown-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    color: #333;
+    text-align: left;
+  }
+
+  .dropdown-item:hover {
+    background-color: #f5f5f5;
+    color: #000;
+  }

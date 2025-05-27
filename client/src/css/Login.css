@@ -1,0 +1,312 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+body, html, #root {
+  height: 100%;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.min-h-screen {
+  min-height: 100vh;
+}
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.bg-gray-100 {
+  background-color: #c4c7ca; 
+}
+
+.p-10 {
+  padding: 2.5rem;
+}
+
+.relative {
+  position: relative;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.top-0 {
+  top: 0;
+}
+
+.left-0 {
+  left: 0;
+}
+
+.right-0 {
+  right: 0;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.lg\:container {
+  max-width: 72rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.gap-16 {
+  gap: 4rem;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.left_wrapper {
+    position: relative;
+    z-index: 20;
+    width: 400px;
+    height: 650px;
+    flex-shrink: 0;
+  }
+  
+  .left_wrapper img {
+    width: 500px;
+    height: 650px;
+    object-fit: contain;
+  }
+  
+
+.shape {
+  position: absolute;
+  width: var(--shape-width, 500px);
+  height: var(--shape-height, 500px);
+  background: #1a2238;
+  border-radius: 25px;
+  opacity: 0.9;
+  z-index: 1;
+  transform: rotate(45deg);
+}
+
+
+.shape.top-left {
+  --shape-width: 400px;
+  --shape-height: 500px;
+  top: 37%;
+  left: 55%;
+  transform: translate(-250%, -150%) rotate(140deg) scale(1.8);
+}
+
+.shape.bottom-right {
+  --shape-width: 500px;
+  --shape-height: 800px;
+  bottom: -100;
+  left: -100;
+  transform: translate(20%, 50%) rotate(120deg) scale(1.5);
+}
+
+.right_wrapper {
+  max-width: 640px;
+  width: 100%;
+  height: auto;
+  z-index: 20;
+}
+
+.space-y-4 > :not(template) ~ :not(template) {
+  margin-top: 1rem;
+}
+
+.text-5xl {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.text-gray-dark {
+  color: #313131;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+}
+
+.text-primary {
+  color: #515def;
+}
+
+.max-w-\[640px\] {
+  max-width: 640px;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.h-\[56px\] {
+  height: 56px;
+}
+
+.border-\[1px\] {
+  border-width: 1px;
+}
+
+.border-\[#313131\] {
+  border-color: #313131;
+}
+
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+
+.outline-0 {
+  outline: 0;
+}
+
+.pl-3 {
+  padding-left: 0.75rem;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.font-normal {
+  font-weight: 400;
+}
+
+.text-red-500 {
+  color: #ef4444;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+.text-\[#f3f3f3\] {
+  color: #f3f3f3;
+}
+
+.text-base {
+  font-size: 1rem;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+.pass-button {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.pass-button svg {
+  background: none;
+  color: black; 
+  font-size: 1.25rem; 
+}
+
+@media (max-width: 768px) {
+  .lg\:container {
+    max-width: 100%;
+    padding: 0 1rem;
+  }
+  .left_wrapper {
+    width: 220px;
+    height: 320px;
+  }
+  .left_wrapper img {
+    width: 220px;
+    height: 320px;
+  }
+  .shape.top-left {
+    --shape-width: 300px;
+    --shape-height: 400px;
+    top: 35%;
+    left: 50%;
+    transform: translate(-200%, -130%) rotate(140deg) scale(1.5);
+  }
+  .shape.bottom-right {
+    --shape-width: 300px;
+    --shape-height: 300px;
+    bottom: 0;
+    left: 0;
+    transform: translate(-40%, 40%) rotate(45deg) scale(1.2);
+  }
+  .right_wrapper {
+    max-width: 100%;
+  }
+}
+
+
+.bg-shape-left {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 60%;
+    height: 100%;
+    background-color: #1a2238;
+    clip-path: polygon(0 0, 100% 0, 0 100%);
+    z-index: 0;
+  }
+  
+  .bg-shape-right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 60%;
+    height: 100%;
+    background-color: #c4c7ca;
+    clip-path: polygon(100% 0, 100% 100%, 0 100%);
+    z-index: 0;
+  }
+
+  .login-top-title {
+    position: absolute;
+    top: 24px;
+    right: 1500px;
+    
+    z-index: 10;
+    font-size: 45px;
+    color: #ededee;
+    font-family: 'Bebas Neue', sans-serif;
+  }

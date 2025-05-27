@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+.verify-page {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Scoped Shapes */
+  .verify-page .verify-shape {
+    position: absolute;
+    width: var(--shape-width, 500px);
+    height: var(--shape-height, 500px);
+    background: #1a2238;
+    border-radius: 25px;
+    opacity: 0.9;
+    z-index: 1;
+    transform: rotate(45deg);
+  }
+  
+  .verify-page .verify-shape.bottom-right {
+    --shape-width: 400px;
+    --shape-height: 800px;
+    bottom: -320px;
+    right: 260px;
+    transform: translate(20%, 50%) rotate(140deg) scale(1.5);
+  }
+  
+  .verify-page .verify-shape.top-right {
+    --shape-width: 450px;
+    --shape-height: 450px;
+    top: -120px;
+    right: 100px;
+    transform: translate(10%, -20%) rotate(140deg) scale(1.1);
+  }
+  
+  .verify-page .left_wrapper {
+    transform: translateX(-50px);
+    width: 520px;
+    left: 100px;
+    top: -60px;
+    object-fit: contain;
+    height: auto;
+  }
+  
+  .verify-page input[type="email"] {
+    background-color: #ffffff;
+    color: #000000;
+  }
+  
+  .verify-page .top-header {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #515def;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+  
+  .verify-page .top-header:hover {
+    color: #313131;
+  }
+  
+  .verify-page .top-header svg {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .verify-page .top-title {
+    position: absolute;
+    top: 24px;
+    right: 170px;
+    z-index: 10;
+    font-size: 45px;
+    color: #ededee;
+    font-family: 'Bebas Neue', sans-serif;
+  }

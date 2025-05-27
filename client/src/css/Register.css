@@ -1,0 +1,50 @@
+/* Unique shape class for Register component */
+.register-shape {
+    position: absolute;
+    width: var(--shape-width, 500px);
+    height: var(--shape-height, 500px);
+    background: #1a2238;
+    border-radius: 25px;
+    opacity: 0.9;
+    z-index: 1;
+    transform: rotate(45deg);
+  }
+  
+  .register-shape.top-left {
+    --shape-width: 400px;
+    --shape-height: 500px;
+    top: 37%;
+    left: 55%;
+    transform: translate(-250%, -150%) rotate(140deg) scale(1.8);
+  }
+  
+  .register-shape.bottom-right {
+    --shape-width: 400px;
+    --shape-height: 800px;
+    bottom: -240px;
+    left: 280px;
+    transform: translate(20%, 50%) rotate(140deg) scale(1.5);
+  }
+  
+
+  .w-full.min-h-screen.relative {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  
+  .right_wrapper form button {
+    border-radius: 9999px;
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+  
+  .register-top-title {
+    position: absolute;
+    top: 24px;
+    left:170px;
+    z-index: 10;
+    font-size: 45px;
+    color: #ededee;
+    font-family: 'Bebas Neue', sans-serif;
+  }

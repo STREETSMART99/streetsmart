@@ -1,0 +1,165 @@
+.statistics-dashboard {
+    display: flex;
+    height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f4f6f8;
+  }
+  
+  .statistics-sidebar {
+    width: 240px;
+    background-color: #1e2942;
+    color: white;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 10;
+    border-top-right-radius: 25px;
+  }
+  
+  .statistics-main {
+    margin-left: 240px;
+    padding: 2rem;
+    flex-grow: 1;
+  }
+  
+  .statistics-logo {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .statistics-role-label {
+    font-style: italic;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+  }
+  
+  .statistics-nav-list {
+    list-style: none;
+    padding: 0;
+    font-weight: bold;
+  }
+  
+  .statistics-nav-list li {
+    margin-bottom: 1rem;
+    
+  }
+  
+  .nav-link {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    display: block;
+    border-radius: 10px;
+    transition: background 0.3s ease;
+  }
+  
+  .nav-link:hover {
+    background-color: #0d1e38;
+  }
+  
+  .settings-icon {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-top: auto;
+  }
+  
+  .statistics-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Align items to the top */
+    margin-bottom: 2rem;
+    color: black;
+  }
+
+  /* Add spacing between the title and the profile icon */
+  .statistics-header h2 {
+    margin: 0; /* Remove any default margin */
+    font-size: 32px;
+    font-weight: bold;
+    color: black;
+  }
+
+  .admin-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* Add spacing between profile elements */
+  }
+  
+  .statistics-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+  }
+  
+  .card {
+    width: 350px;
+    background-color: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  
+  .card h3 {
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: #333;
+  }
+  
+  .card-percent {
+    margin-top: 1rem;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #2c3e50;
+  }
+  
+  .active-link {
+    position: relative;
+    background-color: #1668e2;
+    border: 1px solid white;
+  }
+  
+  .active-link::before {
+    content: '⮞';
+    position: absolute;
+    left: -15px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    
+  }
+
+  .profile-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    width: 150px;
+  }
+  
+  .dropdown-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    color: #333;
+    text-align: left;
+  }
+  
+  .dropdown-item:hover {
+    background-color: #f5f5f5;
+    color: #000;
+  }
