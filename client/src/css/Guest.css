@@ -1,0 +1,62 @@
+/* Add to your Dashboard.css or a global CSS file */
+.top-header {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  cursor: pointer;
+  color: #222; /* default: black */
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+.top-header:hover {
+  color: #515def;
+  text-decoration: underline;
+}
+.back-btn--night {
+  color: #fff !important; /* white in night mode */
+}
+.cool-back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #fff;
+  color: #222; 
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  border: none;
+  outline: none;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  position: relative;
+  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+.cool-back-btn:hover, .cool-back-btn:focus {
+  background: #515def;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(81,93,239,0.15);
+  text-decoration: none;
+}
+.cool-back-btn--night {
+  background: #23283a;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+.cool-back-btn--night:hover, .cool-back-btn--night:focus {
+  background: #fff;
+  color: #23283a;
+}
+.cool-back-btn svg {
+  color: #222 !important;
+  fill: #222 !important;
+}
+.cool-back-btn--night svg {
+  color: #fff !important;
+  fill: #fff !important;
+}

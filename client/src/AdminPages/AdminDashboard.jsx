@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import avatar from '../assets/pfp.png';
 import "../css/AdminDashboard.css";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import Sidebar from '../components/Sidebar'; // Import the reusable Sidebar component
+import Sidebar from '../components/Sidebar'; 
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [amenities, setAmenities] = useState([]);
+
+  useEffect(() => {
+    axios.get("/api/amenities")
+      .then(res => setAmenities(Array.isArray(res.data) ? res.data : []))
+      .catch(() => setAmenities([]));
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -15,7 +22,7 @@ const Dashboard = () => {
         "http://localhost:5000/api/auth/logout",
         {},
         {
-          withCredentials: true, // Important to send cookies
+          withCredentials: true, // to send cookies
         }
       );
 
@@ -37,9 +44,24 @@ const Dashboard = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
+  // Calculate stats
+  const totalAmenities = amenities.length;
+  const openAmenities = amenities.filter(a => a.isOpen).length;
+
+  // Consider "newly added" as amenities added in the last 24 hours
+  const now = new Date();
+  const newlyAdded = amenities.filter(a => {
+    if (!a.createdAt) return false;
+    const created = new Date(a.createdAt);
+    return (now - created) < 24 * 60 * 60 * 1000; // last 24 hours
+  }).length;
+
+  // For review: you can define your own logic, e.g., amenities with isOpen === false
+  const forReview = amenities.filter(a => a.isOpen === false).length;
+
   return (
     <div className="dashboard">
-      <Sidebar activePage="dashboard" /> {/* Add the reusable Sidebar component */}
+      <Sidebar activePage="dashboard" />
       <main className="main-content">
         <header className="header">
           <div className="admin-info">
@@ -67,19 +89,19 @@ const Dashboard = () => {
         <section className="stats">
           <div className="card gradient">
             <h3 style={{ color: 'white' }}>TOTAL AMENITIES</h3>
-            <p style={{ color: 'white' }}>0 Amenities</p>
+            <p style={{ color: 'white' }}>{totalAmenities} Amenities</p>
           </div>
           <div className="card gradient">
             <h3 style={{ color: 'white' }}>AMENITIES OPEN</h3>
-            <p style={{ color: 'white' }}>0 Open Amenities</p>
+            <p style={{ color: 'white' }}>{openAmenities} Open Amenities</p>
           </div>
           <div className="card gradient">
             <h3 style={{ color: 'white' }}>NEWLY ADDED</h3>
-            <p style={{ color: 'white' }}>0 New Amenities</p>
+            <p style={{ color: 'white' }}>{newlyAdded} New Amenities</p>
           </div>
           <div className="card gradient">
             <h3 style={{ color: 'white' }}>REVIEW</h3>
-            <p style={{ color: 'white' }}>0 For Review</p>
+            <p style={{ color: 'white' }}>{forReview} For Review</p>
           </div>
         </section>
 

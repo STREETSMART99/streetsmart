@@ -29,7 +29,6 @@ e.preventDefault();
     Swal.fire({
       title: message,
       icon: "success",
-      draggable: true  
     });
 
     console.log('verify email', status, message);

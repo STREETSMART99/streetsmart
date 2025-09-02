@@ -1,55 +1,125 @@
-import React, { useState } from "react";
+
+import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import "../css/Dashboard.css";
-import logo from "../assets/pfp.png";
+import pfp from "../assets/pfp.png";
 import "leaflet/dist/leaflet.css";
+import { FaStar } from "react-icons/fa";
 
-const locations = {
-  "Manila city hall": [14.589793, 120.981617],
-  "Plaza Hugo Basketball Court and Theater": [14.5886, 120.9812],
-  "Philippines-Thailand Friendship Circle": [14.5833, 120.9876],
-  "MDSW District V & VI Office": [14.5891, 120.9753],
-  "Sta Ana Art Center": [14.5789, 120.9871],
-};
-
-
+// Helper component to fly to a location when center changes
 const FlyToLocation = ({ center }) => {
   const map = useMap();
-  map.flyTo(center, 18, { duration: 1.5 }); 
+  useEffect(() => {
+    if (center) {
+      map.flyTo(center, 18, { duration: 1.5 });
+    }
+  }, [center, map]);
   return null;
 };
 
 export default function Dashboard() {
   const [nightMode, setNightMode] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState("Manila city hall");
+  const [amenities, setAmenities] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [userPhoto, setUserPhoto] = useState(""); // Only photo
+  const [favorites, setFavorites] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Fetch amenities
+    axios
+      .get("/api/amenities")
+      .then((res) => {
+        const data = Array.isArray(res.data) ? res.data : [];
+        setAmenities(data);
+        if (data.length > 0 && !selectedLocation) {
+          setSelectedLocation(data[0].name); // Select the first amenity by default
+        }
+      })
+      .catch((err) => console.error("Failed to fetch amenities", err));
+
+    // Fetch user photo only
+    const fetchUserPhoto = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          setUserPhoto("");
+          return;
+        }
+        const response = await axios.get("http://localhost:5000/api/auth/user", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUserPhoto(response.data.photo);
+      } catch (error) {
+        setUserPhoto("");
+      }
+    };
+    fetchUserPhoto();
+
+    // Fetch favorites
+    const fetchFavorites = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const res = await axios.get("/api/auth/favorites", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setFavorites(res.data.favorites || []);
+    };
+    fetchFavorites();
+    // eslint-disable-next-line
+  }, []);
 
   const toggleNightMode = () => setNightMode((prev) => !prev);
 
-  const filteredAmenities = Object.keys(locations).filter((name) =>
-    name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredAmenities = Array.isArray(amenities)
+    ? amenities.filter((a) =>
+        a.name && a.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : [];
 
-  const handleLogout = async () => {
-    try {
-      await axios.post("http://localhost:5000/api/auth/logout", {}, {
-        withCredentials: true, // Send cookies
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
+
+  const toggleFavorite = async (amenityName) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    if (favorites.includes(amenityName)) {
+      // Remove favorite
+      const res = await axios.delete("/api/auth/favorites", {
+        headers: { Authorization: `Bearer ${token}` },
+        data: { amenity: amenityName }
       });
-      localStorage.removeItem("user"); // Optional: if you store user info in localStorage
-      navigate("/login");
-    } catch (err) {
-      console.error("Logout failed", err);
-      Swal.fire({
-        title: "Logout Failed",
-        text: err.response?.data?.message || "Something went wrong.",
-        icon: "error",
+      setFavorites(res.data.favorites);
+    } else {
+      // Add favorite
+      const res = await axios.post("/api/auth/favorites", { amenity: amenityName }, {
+        headers: { Authorization: `Bearer ${token}` }
       });
+      setFavorites(res.data.favorites);
     }
   };
+
+  // Filter amenities with valid location (array of two numbers)
+  const validAmenities = amenities.filter(
+    a =>
+      Array.isArray(a.location) &&
+      a.location.length === 2 &&
+      typeof a.location[0] === "number" &&
+      typeof a.location[1] === "number"
+  );
+
+  const selectedAmenity = validAmenities.find(a => a.name === selectedLocation);
+
+  const mapCenter =
+    (selectedAmenity && selectedAmenity.location) ||
+    (validAmenities.length > 0 && validAmenities[0].location) ||
+    [14.589793, 120.981617]; // fallback to Manila city hall
 
   return (
     <div className={`dashboard ${nightMode ? "dashboard--night" : ""}`}>
@@ -63,7 +133,7 @@ export default function Dashboard() {
                   alt="User profile"
                   className="dashboard__avatar"
                   height="40"
-                  src={logo}
+                  src={userPhoto ? userPhoto : pfp}
                   width="40"
                 />
               </button>
@@ -79,8 +149,7 @@ export default function Dashboard() {
 
           <nav className="dashboard__nav">
             <ul>
-              <li>
-              </li>
+              <li></li>
               <li>
                 <Link to="/analytics" className="dashboard__nav-link">
                   Analytics
@@ -111,35 +180,64 @@ export default function Dashboard() {
 
           <ul id="amenities" className="dashboard__amenity-list">
             {filteredAmenities.length > 0 ? (
-              filteredAmenities.map((name) => (
+              filteredAmenities.map((amenity) => (
                 <li
-                  key={name}
+                  key={amenity._id}
                   className={`dashboard__amenity-item ${
-                    selectedLocation === name ? "dashboard__amenity-item--active" : ""
+                    selectedLocation === amenity.name
+                      ? "dashboard__amenity-item--active"
+                      : ""
                   }`}
-                  onClick={() => setSelectedLocation(name)} // Update selected location
+                  onClick={() => setSelectedLocation(amenity.name)}
                   tabIndex={0}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
-                      setSelectedLocation(name);
+                      setSelectedLocation(amenity.name);
                     }
                   }}
                   role="button"
-                  aria-pressed={selectedLocation === name}
+                  aria-pressed={selectedLocation === amenity.name}
                 >
-                  <div>
-                    <p className="dashboard__amenity-title">{name}</p>
-                    <p>{`Description for ${name}.`}</p>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <FaStar
+                      style={{
+                        color: favorites.includes(amenity.name) ? "#FFD700" : "#ccc",
+                        cursor: "pointer"
+                      }}
+                      onClick={e => {
+                        e.stopPropagation();
+                        toggleFavorite(amenity.name);
+                      }}
+                      title={favorites.includes(amenity.name) ? "Unfavorite" : "Favorite"}
+                    />
+                    <div>
+                      <p className="dashboard__amenity-title">{amenity.name}</p>
+                      <p>{`Description for ${amenity.name}.`}</p>
+                    </div>
                   </div>
                   {/* Add View Analytics Button */}
                   <button
                     className="dashboard__view-analytics-button"
                     onClick={(e) => {
-                      e.stopPropagation(); // Prevent triggering the parent click
-                      navigate(`/analytics?amenity=${name}`);
+                      e.stopPropagation();
+                      navigate(`/analytics?amenity=${encodeURIComponent(amenity.name)}`, {
+                        state: {
+                          amenityDetails: {
+                            name: amenity.name,
+                            description: amenity.description,
+                            services: amenity.services,
+                            open: amenity.open,
+                            close: amenity.close,
+                            cutoff: amenity.cutoff,
+                            maxCapacity: amenity.maxCapacity,
+                            counter: amenity.counter ?? 0,
+                            availability: amenity.availability,
+                          }
+                        }
+                      });
                     }}
                   >
-                    View 
+                    View
                   </button>
                 </li>
               ))
@@ -173,37 +271,68 @@ export default function Dashboard() {
       </aside>
 
       <main className="dashboard__main-content">
-        <MapContainer
-          center={locations[selectedLocation]}
-          zoom={15}
-          className="dashboard__map-container"
-          style={{ height: "100%", width: "100%" }}
-        >
-          {/* Fly to the selected location */}
-          <FlyToLocation center={locations[selectedLocation]} />
+        {/* Only render MapContainer if mapCenter is defined */}
+        {mapCenter && (
+          <MapContainer
+            center={mapCenter}
+            zoom={15}
+            className="dashboard__map-container"
+            style={{ height: "100%", width: "100%" }}
+          >
+            <FlyToLocation center={mapCenter} />
 
-          {/* Use a different tile layer for night mode */}
-          <TileLayer
-            url={
-              nightMode
-                ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-                : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            }
-            attribution={
-              nightMode
-                ? '&copy; <a href="https://carto.com/">CARTO</a>'
-                : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }
-          />
-          {Object.entries(locations).map(([name, position]) => (
-            <Marker key={name} position={position}>
-              <Popup>{name}</Popup>
-            </Marker>
-          ))}
-        </MapContainer>
+            <TileLayer
+              url={
+                nightMode
+                  ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                  : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              }
+              attribution={
+                nightMode
+                  ? '&copy; <a href="https://carto.com/">CARTO</a>'
+                  : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              }
+            />
+
+            {/* Use amenity locations from the database */}
+            {validAmenities.map((amenity) => (
+              <Marker key={amenity._id} position={amenity.location}>
+                <Popup autoOpen={selectedLocation === amenity.name} autoPan={false}>
+                  <strong>{amenity.name}</strong>
+                  <br />
+                  {amenity.description}
+                </Popup>
+                {/* Always show the amenity name above the marker */}
+                {selectedLocation === amenity.name && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: "50%",
+                      top: "-30px",
+                      transform: "translate(-50%, 0)",
+                      background: "white",
+                      padding: "2px 8px",
+                      borderRadius: "6px",
+                      fontWeight: "bold",
+                      pointerEvents: "none",
+                      zIndex: 1000,
+                    }}
+                  >
+                    {amenity.name}
+                  </div>
+                )}
+              </Marker>
+            ))}
+          </MapContainer>
+        )}
       </main>
     </div>
   );
 }
+
+
+
+
+
 
 

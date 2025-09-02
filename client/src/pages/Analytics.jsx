@@ -5,9 +5,11 @@ import {
   Area,
   XAxis,
   YAxis,
-  Tooltip,
   ResponsiveContainer,
-  Legend
+  Legend,
+  BarChart,
+  Bar,
+  Tooltip
 } from 'recharts';
 import axios from 'axios';
 import '../css/Analytics.css';
@@ -43,12 +45,13 @@ const Analytics = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [historicalData, setHistoricalData] = useState([]);
   const [forecastData, setForecastData] = useState([]);
-  const [iotData, setIotData] = useState([]);
   const [bestTime, setBestTime] = useState('');
   const [worstTime, setWorstTime] = useState('');
   const [userReport, setUserReport] = useState({ comment: '', image: null });
   const [alerts, setAlerts] = useState([]);
   const [submitting, setSubmitting] = useState(false);
+  const [amenityDetails, setAmenityDetails] = useState(null);
+  const [viewMode, setViewMode] = useState('hourly'); // 'hourly' or 'daily'
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -93,20 +96,23 @@ const Analytics = () => {
     fetchForecast();
   }, [amenityName, selectedDate]);
 
-  // Real-time IoT data via polling (replace with WebSocket for production)
+  // Fetch amenity details: use location.state if available, else fetch from backend
   useEffect(() => {
-    let interval = setInterval(async () => {
-      try {
-        const res = await axios.get(
-          `/api/analytics/iot?amenity=${encodeURIComponent(amenityName)}`
-        );
-        setIotData(res.data.iot || []);
-      } catch (err) {
-        // Ignore for now
-      }
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [amenityName]);
+    if (location.state && location.state.amenityDetails) {
+      setAmenityDetails(location.state.amenityDetails);
+    } else {
+      const fetchAmenity = async () => {
+        try {
+          const res = await axios.get(`/api/amenities?name=${encodeURIComponent(amenityName)}`);
+          setAmenityDetails(Array.isArray(res.data) ? res.data[0] : res.data);
+        } catch {
+          setAmenityDetails(null);
+        }
+      };
+      fetchAmenity();
+    }
+    // eslint-disable-next-line
+  }, [amenityName, location.state]);
 
   // Set dark mode
   useEffect(() => {
@@ -115,12 +121,11 @@ const Analytics = () => {
     setDarkMode(isDark);
   }, []);
 
-  // Compose chart data (merge historical, forecast, iot)
+  // Compose chart data (merge historical, forecast)
   const chartData = timeSlots.map((time, idx) => {
     const hist = historicalData[idx]?.value ?? null;
     const forecast = forecastData[idx]?.value ?? null;
-    const iot = iotData[idx]?.value ?? null;
-    return { time, hist, forecast, iot };
+    return { time, hist, forecast };
   });
 
   // Handle user report submission
@@ -144,158 +149,299 @@ const Analytics = () => {
     setSubmitting(false);
   };
 
+  // Example data (replace with your real data)
+  const hourlyData = [
+    { time: '00:00', value: 2 },
+    { time: '01:00', value: 4 },
+    { time: '02:00', value: 7 },
+    { time: '03:00', value: 10 },
+    { time: '04:00', value: 13 },
+    { time: '05:00', value: 16 },
+    { time: '06:00', value: 18 },
+    { time: '07:00', value: 20 },
+    { time: '08:00', value: 22 },
+    { time: '09:00', value: 19 },
+    { time: '10:00', value: 15 },
+    { time: '11:00', value: 12 },
+    { time: '12:00', value: 9 },
+  ];
+
+  const dailyData = [
+    { day: 'Mon', value: 80 },
+    { day: 'Tue', value: 120 },
+    { day: 'Wed', value: 100 },
+    { day: 'Thu', value: 140 },
+    { day: 'Fri', value: 160 },
+    { day: 'Sat', value: 200 },
+    { day: 'Sun', value: 180 },
+  ];
+
   return (
-    <div className={`predictive-wrapper ${darkMode ? 'dark' : ''}`}>
-      <div className="predictive-background-shape"></div>
-      <button className="predictive-back" onClick={() => navigate(-1)}>&larr;</button>
-      <div className="predictive-content">
-        <h2 className="predictive-title">Predictive Analytics</h2>
-
-        {/* Alerts */}
-        {alerts.map((alert, idx) => (
-          <div key={idx} className={`alert alert-${alert.type}`}>{alert.msg}</div>
-        ))}
-
-        {/* Recommendations */}
-        <div className="recommendations">
-          <span role="img" aria-label="info">💡</span>
-          {bestTime && (
-            <span>
-              Best time to visit: <strong style={{ color: '#2ecc71' }}>{bestTime}</strong>
-            </span>
-          )}
-          {worstTime && (
-            <span style={{ marginLeft: 20 }}>
-              Avoid: <strong style={{ color: '#e74c3c' }}>{worstTime}</strong>
-            </span>
-          )}
-        </div>
-
-        <div className="predictive-panels">
-          {/* Main Content */}
-          <div className="left-panel">
-            <div className="location-box">
-              <div className="location-header">
-                <span role="img" aria-label="location" style={{ color: "black" }}>📍</span> Location: <strong>{amenityName}</strong>
-              </div>
-
-              <div className="date-row">
-                <span className="date-label">Today</span>
-                <input
-                  type="date"
-                  className="date-input"
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
-                />
-                <span className="time-label">{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-              </div>
-
-              <div className="scrollable-time-chart">
-                <div className="time-labels">
-                  {timeSlots.map((slot, idx) => (
-                    <div
-                      key={idx}
-                      className="time-label"
-                      style={{
-                        background: chartData[idx]?.hist !== null
-                          ? getHeatColor(chartData[idx].hist)
-                          : undefined,
-                        color: chartData[idx]?.hist !== null
-                          ? '#fff'
-                          : undefined,
-                        borderRadius: 4,
-                        padding: '2px 6px'
-                      }}
-                    >
-                      {slot}
+    <>
+      <div className={`predictive-wrapper ${darkMode ? 'dark' : ''}`}>
+        <div className="predictive-background-shape"></div>
+        <button className="predictive-back" onClick={() => navigate(-1)}>&larr;</button>
+        <div className="predictive-content">
+          {amenityDetails && (
+            <div style={{ position: "relative" }}>
+              {/* Top section: info + report summary */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 18 }}>
+                {/* Amenity Info Panel */}
+                <div>
+                  <div className="amenity-info-title">{amenityDetails.name}</div>
+                  <div className="amenity-info-description">{amenityDetails.description}</div>
+                  <div className="amenity-info-services">
+                    <b>Services:</b>{" "}
+                    <b>
+                      {Array.isArray(amenityDetails.services)
+                        ? amenityDetails.services.join(", ")
+                        : amenityDetails.services}
+                    </b>
+                  </div>
+                  <div className="amenity-info-hours-row">
+                    <div className="amenity-info-hour-box">
+                      <div className="amenity-info-hour-label">Open</div>
+                      <div className="amenity-info-hour-value">{amenityDetails.open || "--:--"}</div>
                     </div>
-                  ))}
+                    <div className="amenity-info-hour-box">
+                      <div className="amenity-info-hour-label">Close</div>
+                      <div className="amenity-info-hour-value">{amenityDetails.close || "--:--"}</div>
+                    </div>
+                    <div className="amenity-info-hour-box">
+                      <div className="amenity-info-hour-label">Cutoff</div>
+                      <div className="amenity-info-hour-value">{amenityDetails.cutoff || "--:--"}</div>
+                    </div>
+                  </div>
+                  <div className="amenity-info-occupancy-label">Current Occupancy</div>
+                  <div className="amenity-info-occupancy-value">
+                    {(amenityDetails.counter ?? 0)} / {(amenityDetails.maxCapacity ?? 0)}
+                  </div>
+                  <div className="amenity-info-status-row">
+                    Status:{" "}
+                    <span
+                      className={
+                        "amenity-info-status-value" +
+                        (amenityDetails.availability === "Moderate"
+                          ? " moderate"
+                          : amenityDetails.availability === "Crowded"
+                          ? " crowded"
+                          : "")
+                      }
+                    >
+                      {amenityDetails.availability || "Clear"}
+                    </span>
+                  </div>
                 </div>
-                <div className="chart-wrapper">
-                  <ResponsiveContainer width="100%" height={timeSlots.length * 30}>
-                    <AreaChart data={chartData} layout="vertical">
-                      <XAxis type="number" hide />
-                      <YAxis type="category" dataKey="time" hide />
-                      <Tooltip
-                        formatter={(value, name) => {
-                          if (name === 'hist') return [`${value} (historical)`, 'Historical'];
-                          if (name === 'forecast') return [`${value} (forecast)`, 'Forecast'];
-                          if (name === 'iot') return [`${value} (real-time)`, 'IoT'];
-                          return [value, name];
-                        }}
-                      />
-                      <Legend />
-                      <Area
-                        type="monotone"
-                        dataKey="hist"
-                        stroke="#4b4b8d"
-                        fill="#4b4b8d"
-                        fillOpacity={0.2}
-                        name="Historical"
-                        isAnimationActive={false}
-                      />
-                      <Area
-                        type="monotone"
-                        dataKey="forecast"
-                        stroke="#f39c12"
-                        fill="#f39c12"
-                        fillOpacity={0.15}
-                        name="Forecast"
-                        isAnimationActive={false}
-                      />
-                      <Area
-                        type="monotone"
-                        dataKey="iot"
-                        stroke="#e74c3c"
-                        fill="#e74c3c"
-                        fillOpacity={0.1}
-                        name="IoT"
-                        isAnimationActive={false}
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
+                {/* Right: Report Summary */}
+                <div className="report-summary-box" style={{ marginLeft: 40 }}>
+                  <div className="report-summary-title">Report Summary</div>
+                  <div className="report-summary-row">
+                    <b>Best Day to Visit:</b> <span style={{ color: "#4b4b8d" }}>Wednesday</span>
+                  </div>
+                  <div className="report-summary-row">
+                    <b>Best Time to Visit:</b> <span style={{ color: "#2ecc71" }}>10:30 AM</span>
+                  </div>
+                  <div className="report-summary-note">
+                    (Based on simulated data. Real recommendations will appear here once IoT sensors are available.)
+                  </div>
                 </div>
               </div>
+              <div className="analytics-chart-tabs">
+                <div
+                  className={`analytics-chart-tab${viewMode === "hourly" ? " active" : ""}`}
+                  onClick={() => setViewMode("hourly")}
+                >
+                  Hourly
+                </div>
+                <div
+                  className={`analytics-chart-tab${viewMode === "daily" ? " active" : ""}`}
+                  onClick={() => setViewMode("daily")}
+                >
+                  Daily
+                </div>
+              </div>
+              <div className="analytics-chart-title">
+                {viewMode === "hourly" ? "Hourly Data (24h)" : "Daily Data (7d)"}
+              </div>
+              <div className="analytics-chart-container">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={viewMode === "hourly" ? hourlyData : dailyData}
+                    margin={{ top: 10, right: 20, left: 0, bottom: 20 }}
+                  >
+                    <XAxis
+                      dataKey={viewMode === "hourly" ? "time" : "day"}
+                      tick={{ fontSize: 13 }}
+                    />
+                    <YAxis hide />
+                    <Tooltip />
+                    <Bar dataKey="value" fill="#4b8dfb" radius={[8, 8, 0, 0]} barSize={24} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
             </div>
-          </div>
-
-          {/* Real-time IoT Data */}
-          <div className="right-panel">
-            <div className="live-view-box">
-              <div className="live-view-placeholder">📊</div>
-              <p className="live-description"><strong>IoT Data Overview</strong></p>
-              <p className="live-subtext">
-                {iotData.length > 0
-                  ? `Latest: ${iotData[iotData.length - 1].value} people detected`
-                  : 'Real-time data from IoT devices will be displayed here.'}
-              </p>
-            </div>
-
-            {/* User Report Form */}
-            <form className="user-report-form" onSubmit={handleReportSubmit} style={{ marginTop: 30 }}>
-              <h4>Submit Live Report</h4>
-              <textarea
-                placeholder="Describe current conditions..."
-                value={userReport.comment}
-                onChange={e => setUserReport({ ...userReport, comment: e.target.value })}
-                required
-                rows={3}
-                style={{ width: '100%', marginBottom: 8 }}
-              />
-              <input
-                type="file"
-                accept="image/*"
-                onChange={e => setUserReport({ ...userReport, image: e.target.files[0] })}
-                style={{ marginBottom: 8 }}
-              />
-              <button type="submit" className="add-btn" disabled={submitting}>
-                {submitting ? 'Submitting...' : 'Submit Report'}
-              </button>
-            </form>
-          </div>
+          )}
         </div>
       </div>
-    </div>
+
+      {/* Recommendations */}
+      <div className="recommendations">
+        <span role="img" aria-label="info">💡</span>
+        {bestTime && (
+          <span>
+            Best time to visit: <strong style={{ color: '#2ecc71' }}>{bestTime}</strong>
+          </span>
+        )}
+        {worstTime && (
+          <span style={{ marginLeft: 20 }}>
+            Avoid: <strong style={{ color: '#e74c3c' }}>{worstTime}</strong>
+          </span>
+        )}
+      </div>
+
+      <div className="predictive-panels">
+        {/* Main Content */}
+        <div className="left-panel">
+          <div className="location-box">
+            <div className="location-header">
+              <span role="img" aria-label="location" style={{ color: "black" }}>📍</span> Location: <strong>{amenityName}</strong>
+            </div>
+
+            <div className="date-row">
+              <span className="date-label">Today</span>
+              <input
+                type="date"
+                className="date-input"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+              />
+              <span className="time-label">{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+            </div>
+
+            <div className="scrollable-time-chart">
+              <div className="time-labels">
+                {timeSlots.map((slot, idx) => (
+                  <div
+                    key={idx}
+                    className="time-label"
+                    style={{
+                      background: chartData[idx]?.hist !== null
+                        ? getHeatColor(chartData[idx].hist)
+                        : undefined,
+                      color: chartData[idx]?.hist !== null
+                        ? '#fff'
+                        : undefined,
+                      borderRadius: 4,
+                      padding: '2px 6px'
+                    }}
+                  >
+                    {slot}
+                  </div>
+                ))}
+              </div>
+              <div className="chart-wrapper">
+                <ResponsiveContainer width="100%" height={timeSlots.length * 30}>
+                  <AreaChart data={chartData} layout="vertical">
+                    <XAxis type="number" hide />
+                    <YAxis type="category" dataKey="time" hide />
+                    <Legend />
+                    <Area
+                      type="monotone"
+                      dataKey="hist"
+                      stroke="#4b4b8d"
+                      fill="#4b4b8d"
+                      fillOpacity={0.2}
+                      name="Historical"
+                      isAnimationActive={false}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="forecast"
+                      stroke="#f39c12"
+                      fill="#f39c12"
+                      fillOpacity={0.15}
+                      name="Forecast"
+                      isAnimationActive={false}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Panel (no IoT) */}
+        <div className="right-panel">
+          {/* User Report Form */}
+          <form className="user-report-form" onSubmit={handleReportSubmit} style={{ marginTop: 30 }}>
+            <h4>Submit Live Report</h4>
+            <textarea
+              placeholder="Describe current conditions..."
+              value={userReport.comment}
+              onChange={e => setUserReport({ ...userReport, comment: e.target.value })}
+              required
+              rows={3}
+              style={{ width: '100%', marginBottom: 8 }}
+            />
+            <input
+              type="file"
+              accept="image/*"
+              onChange={e => setUserReport({ ...userReport, image: e.target.files[0] })}
+              style={{ marginBottom: 8 }}
+            />
+            <button type="submit" className="add-btn" disabled={submitting}>
+              {submitting ? 'Submitting...' : 'Submit Report'}
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div style={{ display: "flex", gap: 20, margin: "18px 0 0 0" }}>
+        <div
+          style={{
+            color: viewMode === "hourly" ? "#4b4b8d" : "#bbb",
+            fontWeight: 700,
+            borderBottom: viewMode === "hourly" ? "2px solid #4b4b8d" : "none",
+            cursor: "pointer"
+          }}
+          onClick={() => setViewMode("hourly")}
+        >
+          Hourly
+        </div>
+        <div
+          style={{
+            color: viewMode === "daily" ? "#4b4b8d" : "#bbb",
+            fontWeight: 700,
+            borderBottom: viewMode === "daily" ? "2px solid #4b4b8d" : "none",
+            cursor: "pointer"
+          }}
+          onClick={() => setViewMode("daily")}
+        >
+          Daily
+        </div>
+      </div>
+
+      <div style={{ fontWeight: 600, fontSize: 15, color: "#4b4b8d", margin: "10px 0 0 0" }}>
+        {viewMode === "hourly" ? "Hourly Data (24h)" : "Daily Data (7d)"}
+      </div>
+
+      <div style={{ width: "100%", height: "240px", margin: "10px 0 0 0" }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            data={viewMode === "hourly" ? hourlyData : dailyData}
+            margin={{ top: 10, right: 20, left: 0, bottom: 20 }}
+          >
+            <XAxis
+              dataKey={viewMode === "hourly" ? "time" : "day"}
+              tick={{ fontSize: 13 }}
+            />
+            <YAxis hide />
+            <Tooltip />
+            <Bar dataKey="value" fill="#4b8dfb" radius={[8, 8, 0, 0]} barSize={24} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    </>
   );
 };
 

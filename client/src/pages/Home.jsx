@@ -20,7 +20,7 @@ const Home = () => {
             <div 
                 className="home-card">
                 <div className="buttons">
-                    <button>Guest</button>
+                    <button onClick={() => navigate('/guest')}>Guest</button>
                     <button onClick={handleLoginRedirect}>Log In</button>
                 </div>
                 <div className="tagline">STREET SMART, YOUR GO TO APP</div>

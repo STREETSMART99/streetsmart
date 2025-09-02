@@ -17,6 +17,9 @@ const Sidebar = ({ activePage }) => {
         <li className={`nav-link ${activePage === "amenities" ? "active-link" : ""}`}>
           <Link to="/admin/amenities">Amenities</Link>
         </li>
+        <li className={`nav-link ${activePage === "users-report" ? "active-link" : ""}`}>
+          <Link to="/admin/users-report">Users Report</Link>
+        </li>
       </ul>
       <div className="settings-icon">⚙️</div>
     </aside>

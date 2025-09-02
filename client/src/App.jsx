@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./AdminPages/AdminDashboard";
 import AdminAmenities from "./AdminPages/AdminAmenities";
 import AdminStatistics from "./AdminPages/AdminStatistics";
+import UsersReport from "./AdminPages/UsersReport"; // Add this import
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Amenities from "./pages/Amenities"; 
@@ -16,6 +17,7 @@ import Analytics from "./pages/Analytics";
 import Menu from "./pages/Menu";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Guest from "./pages/Guest";
 
 function App() {
   return (
@@ -27,6 +29,7 @@ function App() {
         <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/verify-email/:token" element={<VerifyEmail />} />
+         <Route path="/guest" element={<Guest />} />
 
         
         <Route
@@ -84,6 +87,14 @@ function App() {
           element={
             <ProtectedAdminRoute>
               <AdminStatistics />
+            </ProtectedAdminRoute>
+          }
+        />
+        <Route
+          path="/admin/users-report"
+          element={
+            <ProtectedAdminRoute>
+              <UsersReport />
             </ProtectedAdminRoute>
           }
         />

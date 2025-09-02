@@ -32,7 +32,6 @@ const ResetPassword = () => {
         Swal.fire({
           title: message,
           icon: "success",
-          draggable: true
         });
 
         console.log('user logged', status, message);
@@ -44,7 +43,7 @@ const ResetPassword = () => {
         title: "Passwords do not match",
         text: "Please make sure both passwords are the same.",
         icon: "error",
-        draggable: true
+  
       });
     }
   };

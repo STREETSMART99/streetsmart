@@ -20,6 +20,7 @@
     left: 0;
     height: 100vh;
     z-index: 100;
+    overflow-y: auto;
   }
   
   .main-content {
@@ -41,8 +42,10 @@
   }
   
   .nav-list {
-    list-style: none;
+    flex: 1 1 auto;
     padding: 0;
+    margin: 0;
+    list-style: none;
     font-weight: bold;
   }
   
@@ -51,9 +54,10 @@
   }
   
   .settings-icon {
-    font-size: 1.5rem;
-    text-align: center;
     margin-top: auto;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-size: 1.5rem;
   }
   
   .header {
@@ -198,6 +202,7 @@
     display: block;
     border-radius: 10px;
     transition: background 0.3s ease;
+    margin-bottom: 1rem; /* Add spacing between links */
   }
   
   .icon-black {

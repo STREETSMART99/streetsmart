@@ -59,7 +59,7 @@ const Register = () => {
                     title: "Registration Successful!",
                     text: message,
                     icon: "success",
-                    draggable: true,
+                    
                 });
 
                 // Clear input fields
@@ -72,7 +72,7 @@ const Register = () => {
                     title: "Registration Failed",
                     text: message || "Email is already in use. Please try another email.",
                     icon: "error",
-                    draggable: true,
+                   
                 });
             } else {
                 throw new Error(message || "Something went wrong. Please try again later.");
@@ -83,7 +83,7 @@ const Register = () => {
                 title: "Error",
                 text: error.message || "Something went wrong. Please try again later.",
                 icon: "error",
-                draggable: true,
+              
             });
         }
     };

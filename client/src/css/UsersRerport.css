@@ -1,0 +1,13 @@
+.active-link {
+  position: relative;
+  background-color: #1668e2;
+  border: 1px solid white;
+}
+.active-link::before {
+  content: '⮞';
+  position: absolute;
+  left: -15px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 50%;
+}

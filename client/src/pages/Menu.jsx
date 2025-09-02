@@ -1,77 +1,115 @@
 import React, { useEffect, useState } from 'react';
 import '../css/Menu.css';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios'; // Import axios for API calls
+import axios from 'axios';
 import {
-  FaStar, FaUserEdit, FaCog, FaQuestionCircle, FaPowerOff, FaArrowLeft
+  FaStar, FaUserEdit, FaCog, FaQuestionCircle, FaPowerOff, FaArrowLeft, FaPlus
 } from 'react-icons/fa';
-import pfp from '../assets/pfp.png'; // Import the pfp.png image
+import pfp from '../assets/pfp.png';
+import FavoriteModal from "../components/FavoriteModal"; // Import the modal
 
 const Menu = () => {
   const navigate = useNavigate();
   const [darkMode, setDarkMode] = useState(false);
-  const [fullName, setFullName] = useState(''); // State for user's full name
+  const [fullName, setFullName] = useState('');
+  const [photo, setPhoto] = useState(''); // Add photo state
+  const [showFavorites, setShowFavorites] = useState(false);
+  const fileInputRef = React.useRef(null);
 
   useEffect(() => {
     const storedMode = localStorage.getItem('darkMode');
-    if (storedMode === 'true') {
-      setDarkMode(true);
-    }
+    if (storedMode === 'true') setDarkMode(true);
 
-    // Fetch user information from the backend
     const fetchUserInfo = async () => {
       try {
-        const token = localStorage.getItem('token'); // Assuming the token is stored in localStorage
+        const token = localStorage.getItem('token');
         if (!token) {
-          console.error('No token found');
           setFullName('Guest');
+          setPhoto('');
           return;
         }
-
         const response = await axios.get('http://localhost:5000/api/auth/user', {
-          headers: {
-            Authorization: `Bearer ${token}`, // Send token in the Authorization header
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
-
-        console.log('User Details:', response.data); // Debugging log
-        setFullName(response.data.fullName); // Set the full name from the response
+        setFullName(`${response.data.firstName} ${response.data.lastName}`);
+        setPhoto(response.data.photo); 
       } catch (error) {
-        console.error('Error fetching user info:', error);
-        setFullName('Guest'); // Fallback if the request fails
+        setFullName('Guest');
+        setPhoto('');
       }
     };
 
     fetchUserInfo();
   }, []);
 
+  // Handle photo upload
+  const handlePhotoChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('photo', file);
+
+    const token = localStorage.getItem('token');
+    try {
+      const res = await axios.post(
+        'http://localhost:5000/api/auth/upload-photo',
+        formData,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setPhoto(res.data.photo); // Update photo with Cloudinary URL
+    } catch (err) {
+      alert('Failed to upload photo');
+    }
+  };
+
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Clear the token from local storage
-    navigate('/login'); // Redirect to the login page
+    localStorage.removeItem('token');
+    navigate('/login');
   };
 
   return (
     <div className={`menu-wrapper ${darkMode ? 'dark' : ''}`}>
-      <div className="menu-background-shape" />
+      {/* Black and white shapes for background */}
+      <div className="shape shape-black top-left"></div>
+      <div className="shape shape-white bottom-left"></div>
       <button className="menu-back" onClick={() => navigate('/dashboard')}>
         <FaArrowLeft />
       </button>
       <div className="menu-content">
-        <img
-          className="menu-avatar"
-          src={pfp} // Use the pfp.png image
-          alt="Avatar"
-        />
-        <h2 className="menu-username">{fullName || 'Guest'}</h2> {/* Display full name or fallback */}
+        <div className="menu-avatar-wrapper" style={{ position: "relative", display: "inline-block" }}>
+          <img
+            className="menu-avatar"
+            src={photo ? photo : pfp}
+            alt="Avatar"
+          />
+          <button
+            className="menu-avatar-add-btn"
+            type="button"
+            onClick={() => fileInputRef.current && fileInputRef.current.click()}
+            title="Change profile photo"
+          >
+            <FaPlus />
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handlePhotoChange}
+            style={{ display: 'none' }}
+          />
+        </div>
+        <h2 className="menu-username">{fullName || 'Guest'}</h2>
         <ul className="menu-links">
-          <li onClick={() => navigate('/favorites')}><FaStar /> Favorites</li>
-          <li onClick={() => navigate('/edit-profile')}><FaUserEdit /> Edit Profile</li>
+          <li onClick={() => setShowFavorites(true)}>
+            <FaStar /> Favorites
+          </li>
           <li onClick={() => navigate('/settings')}><FaCog /> Settings</li>
           <li onClick={() => navigate('/help')}><FaQuestionCircle /> Help</li>
           <li onClick={handleLogout}>
             <FaPowerOff /> Log Out
           </li>
         </ul>
+        <FavoriteModal open={showFavorites} onClose={() => setShowFavorites(false)} />
       </div>
     </div>
   );
