@@ -50,7 +50,7 @@ export default function Dashboard() {
           setUserPhoto("");
           return;
         }
-        const response = await axios.get("http://localhost:5000/api/auth/user", {
+        const response = await axios.get("https://streetsmart-server.onrender.com/api/auth/user", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUserPhoto(response.data.photo);
