@@ -186,7 +186,7 @@
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    background: conic-gradient(#1b365f 0% 80%, #ccc 0% 100%);
+     background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
