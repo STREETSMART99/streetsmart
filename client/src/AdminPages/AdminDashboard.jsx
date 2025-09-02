@@ -19,7 +19,7 @@ const Dashboard = () => {
   const handleLogout = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/logout",
+        "https://streetsmart-server.onrender.com/api/auth/logout",
         {},
         {
           withCredentials: true, // to send cookies
