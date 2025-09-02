@@ -27,11 +27,6 @@ const sendEmail = async (to, subject, htmlContent) => {
 
 };
 
-const clientUrl = process.env.CLIENT_URL;
-const verificationLink = `${clientUrl}/verify-email/${token}`;
-const htmlContent = `<a href="${verificationLink}">Verify your email</a>`;
-sendEmail(user.email, "Verify your email", htmlContent);
-
 module.exports = sendEmail;
 
 
