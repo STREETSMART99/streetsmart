@@ -28,7 +28,7 @@ const Menu = () => {
           setPhoto('');
           return;
         }
-        const response = await axios.get('http://localhost:5000/api/auth/user', {
+        const response = await axios.get('https://streetsmart-server.onrender.com/api/auth/user', {
           headers: { Authorization: `Bearer ${token}` },
         });
         setFullName(`${response.data.firstName} ${response.data.lastName}`);
@@ -52,7 +52,7 @@ const Menu = () => {
     const token = localStorage.getItem('token');
     try {
       const res = await axios.post(
-        'http://localhost:5000/api/auth/upload-photo',
+        'https://streetsmart-server.onrender.com/api/auth/upload-photo',
         formData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
