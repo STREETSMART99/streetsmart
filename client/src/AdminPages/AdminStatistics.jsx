@@ -19,29 +19,17 @@ const AdminStatistics = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false); // State for dropdown
   const navigate = useNavigate();
 
-  const handleLogout = async () => {
+ const handleLogout = async () => {
     try {
-      const res = await axios.post(
-        "https://streetsmart-server.onrender.com/api/auth/logout",
-        {},
-        {
-          withCredentials: true, // Send cookies
-        }
-      );
-
-      console.log("Logout response:", res.data);
-
-      // Clear localStorage if used for auth
+      await axios.post("/api/auth/logout", {}, { withCredentials: true });
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-
-      // Redirect to login page
       navigate("/login");
     } catch (error) {
-      console.error("Logout failed:", error.message);
       alert("Logout failed. Please try again.");
     }
   };
+
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
