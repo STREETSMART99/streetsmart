@@ -130,6 +130,7 @@ const AdminAmenities = () => {
           : [],
       };
       const res = await axios.post("/api/amenities", payload);
+      console.log("POST /api/amenities response:", res.data);
       setAmenities([...amenities, res.data]);
       resetModal();
     } catch (err) {
