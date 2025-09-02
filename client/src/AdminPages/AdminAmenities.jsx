@@ -236,7 +236,7 @@ const AdminAmenities = () => {
 
   // Filter amenities based on search
   const filteredAmenities = amenities.filter(a =>
-    a.name.toLowerCase().includes(search.toLowerCase())
+   (a.name || "").toLowerCase().includes(search.toLowerCase())
   );
 
   return (
