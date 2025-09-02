@@ -1,8 +1,8 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const database = require("./config/database");
+const cors = require('cors');
 
 dotenv.config();
 
@@ -13,10 +13,8 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: process.env.CLIENT_URL, // Allowed frontend domain
-    credentials: true, // Allow cookies
-    methods: ["GET", "POST", "PUT", "DELETE"], 
-    allowedHeaders: ["Content-Type", "Authorization"],
+    origin: 'https://streetsmart-client.onrender.com', // your frontend URL
+    credentials: true
   })
 );
 app.use(cookieParser());
